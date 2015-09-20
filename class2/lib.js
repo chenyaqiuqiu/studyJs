@@ -1,51 +1,74 @@
-distance.prototype.inch = 1;
-distance.prototype.feed = 12;
-distance.prototype.mile = 5280;
+var base = function(value, unit) {
+    this.value = value;
+    this.unit = unit;
+}
 
-var distance = (function () {
-    var inch = 1;
-    var feed = inch * 12;
-    var mile = feed * 5280;
+var distance = function(){
+}
 
-    return {
-        get_inches: function (inches) {
-            return inch * inches;
-        },
-        get_feeds: function(feeds) {
-            return feed * feeds;
-        },
-        get_miles: function(miles) {
-            return mile * miles;
-        },
-        is_equal: function(distance_a ,distance_b) {
-            if(distance_a === distance_b)
-                return true;
-            else {
-                return false;
-            }
-        },
-        add: function(distance_a, distance_b) {
-           var add_value = distance_a + distance_b;
-           return add_value;
-        },
-        show: function(distance) { // input any data return the max
-            var mile_i = distance / mile;
-            var feed_i = distance - mile_i * mile;
-            var inch_i = distance - mile_i * mile - feed_i * feed;
+distance.inch = 1;
+distance.feed = distance.inch * 12;
+distance.mile = distance.feed * 5280;
 
-            var str;
-            if (mile_i !== 0) {
-                str = mile_i + "miles";
-            } else if (feed_i !== 0) {
-                str = feed_i + "feeds";
-            } else if (inch_i !== 0) {
-                str = inch_i + "inches";
-            }
 
-            console.log(str);
-            return str;
+distance.prototype.get_inches = function(value) {
+    var inches = new base(value, distance.inch);
+    return inches;
+}
+distance.prototype.get_feeds = function(value) {
+    var feeds = new base(value, distance.feed);
+    return feeds;
+}
+distance.prototype.get_miles = function(value) {
+    var miles = new base(value, distance.mile);
+    return miles;
+}
+
+distance.prototype.is_equal = function (inst_a, inst_b) {
+    var basevalue_a = inst_a.value * inst_a.unit;
+    var basevalue_b = inst_b.value * inst_b.unit;
+
+    if (basevalue_a === basevalue_b)
+        return true;
+    else
+        return false;
+}
+
+distance.prototype.add = function(inst_a, inst_b) {
+    var new_instance = new base();
+    new_instance.value = inst_a.value + inst_b.value;
+    new_instance.unit = inst_a.unit;
+    return new_instance;
+}
+
+distance.prototype.show = function(inst_a) {
+    var basevalue = inst_a.value * inst_a.unit;
+    var str = '';
+
+    if (basevalue === 0) {
+        str += '0 miles';
+    } else {
+        var milesvalue = Math.floor(basevalue / distance.mile);
+        if (milesvalue >= 1) {
+            str += milesvalue + ' miles';
+        }
+        var feedvalue = Math.floor((basevalue - milesvalue * distance.mile) / distance.feed);
+        if (feedvalue >= 1) {
+            str += ' ' + feedvalue + ' feeds';
+        }
+        var inchvalue = Math.floor((basevalue - milesvalue * distance.mile - feedvalue * distance.feed) / distance.inch);
+        if (inchvalue >= 1) {
+            str += ' ' + inchvalue + ' inches';
         }
     }
-}());
+    return str;
+}
+
+distance.prototype.toinch = function(inst_a) {
+    var basevalue = inst_a.value * inst_a.unit;
+    var str = basevalue + ' inches';
+
+    return str;
+}
 
 module.exports = distance;

@@ -1,10 +1,9 @@
 'use strict';
 
 var assert = require("assert");
-var distance = require("./lib.js");
+var dis = require("./lib.js");
+var distance = new dis();
 
-        var lengthA = distance.get_miles(3);
-        console.log(lengthA);
 describe('test distance lib', function() {
     it ('3 miles should be equal 3 miles', function(){
         var lengthA = distance.get_miles(3);
@@ -100,6 +99,24 @@ describe('test distance lib', function() {
         var lengthA = distance.add(distance.get_inches(13), distance.get_inches(11));
         var lengthB = distance.get_feeds(1);
         assert.equal(false, distance.is_equal(lengthA, lengthB));
+    });
+
+     it ('5282 feeds should be equal 1 miles 2 feeds', function(){
+        var lengthA = distance.get_feeds(5282);
+        var pretty_print = distance.show(lengthA);
+        assert.equal('1 miles 2 feeds', pretty_print);
+    });
+
+     it ('5280 feeds should be equal 1 miles 2 feeds', function(){
+        var lengthA = distance.get_feeds(5280);
+        var pretty_print = distance.show(lengthA);
+        assert.equal('1 miles', pretty_print);
+    });
+
+     it ('1 feeds should be print as 12 inches', function(){
+        var lengthA = distance.get_feeds(1);
+        var pretty_inches = distance.toinch(lengthA);
+        assert.equal('12 inches', pretty_inches);
     });
 });
 
